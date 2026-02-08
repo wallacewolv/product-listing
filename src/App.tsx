@@ -1,5 +1,12 @@
 import "./App.css";
 
+import { ProductList } from "./components/ProductList";
+import { useProducts } from "./hooks/useProducts";
+
 export default function App() {
-  return <div>Hello World</div>;
+  const { data, loading } = useProducts();
+
+  if (loading) return <span>Loading...</span>;
+
+  return <ProductList products={data} />;
 }
