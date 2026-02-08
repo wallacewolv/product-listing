@@ -4,9 +4,10 @@ import { ProductList } from "./components/ProductList";
 import { useProducts } from "./hooks/useProducts";
 
 export default function App() {
-  const { data, loading } = useProducts();
+  const { products, loading, error, retry } = useProducts();
 
-  if (loading) return <span>Loading...</span>;
+  if (loading) return <p>Carregando...</p>;
+  if (error) return <button onClick={retry}>Erro. Tentar novamente</button>;
 
-  return <ProductList products={data} />;
+  return <ProductList products={products} />;
 }
