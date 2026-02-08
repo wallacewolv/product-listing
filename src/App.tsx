@@ -1,13 +1,22 @@
 import "./App.css";
 
+import { useState } from "react";
+
 import { ProductList } from "./components/ProductList";
-import { useProducts } from "./hooks/useProducts";
+import { SearchInput } from "./components/SearchInput";
+import type { Product } from "./types/Product";
 
-export default function App() {
-  const { products, loading, error, retry } = useProducts();
+export default function App({ products }: { products: Product[] }) {
+  const [search, setSearch] = useState("");
 
-  if (loading) return <p>Carregando...</p>;
-  if (error) return <button onClick={retry}>Erro. Tentar novamente</button>;
+  const filtered = products.filter((p) =>
+    p.title.toLowerCase().includes(search.toLowerCase()),
+  );
 
-  return <ProductList products={products} />;
+  return (
+    <>
+      <SearchInput onSearch={setSearch} />
+      <ProductList products={filtered} />
+    </>
+  );
 }
