@@ -8,14 +8,21 @@ export function SearchInput({ onSearch }: Props) {
   const [value, setValue] = useState("");
 
   useEffect(() => {
-    onSearch(value);
+    const timeout = setTimeout(() => {
+      onSearch(value);
+    }, 300);
+
+    return () => clearTimeout(timeout);
   }, [value, onSearch]);
 
   return (
-    <input
-      placeholder="Buscar produto"
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-    />
+    <label>
+      Buscar
+      <input
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder="Buscar produto"
+      />
+    </label>
   );
 }
