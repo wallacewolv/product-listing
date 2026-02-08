@@ -1,29 +1,30 @@
-import { useEffect, useState } from "react";
-
+import { useEffect, useState, useCallback } from "react";
 import type { Product } from "../types/Product";
-import { getProducts } from "../services/api";
 
 export function useProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  async function load() {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
       setError(false);
-      const { products } = await getProducts();
-      setProducts(products);
+
+      const response = await fetch("/api/products");
+      const data = await response.json();
+
+      setProducts(data);
     } catch {
       setError(true);
     } finally {
       setLoading(false);
     }
-  }
-
-  useEffect(() => {
-    load();
   }, []);
 
-  return { products, loading, error, retry: load };
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  return { products, loading, error, retry: fetchProducts };
 }
