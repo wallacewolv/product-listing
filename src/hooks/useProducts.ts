@@ -1,30 +1,24 @@
-import { useEffect, useState, useCallback } from "react";
+// hooks/useProducts.ts
+import { useEffect, useState } from "react";
 import type { Product } from "../types/Product";
 
-export function useProducts() {
+interface Params {
+  search: string;
+  page: number;
+}
+
+export function useProducts({ search, page }: Params) {
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  const fetchProducts = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(false);
-
-      const response = await fetch("/api/products");
-      const data = await response.json();
-
-      setProducts(data);
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    setLoading(true);
 
-  return { products, loading, error, retry: fetchProducts };
+    fetch(`/api/products?search=${search}&page=${page}`)
+      .then((res) => res.json())
+      .then((data) => setProducts(data))
+      .finally(() => setLoading(false));
+  }, []); // ❌ dependency array errado
+
+  return { products, loading };
 }
