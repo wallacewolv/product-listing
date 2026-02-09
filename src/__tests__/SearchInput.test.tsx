@@ -1,6 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
 import { SearchInput } from "../components/SearchInput";
 
 describe("SearchInput", () => {
@@ -25,7 +24,9 @@ describe("SearchInput", () => {
 
     expect(onSearch).not.toHaveBeenCalled();
 
-    vi.advanceTimersByTime(300);
+    act(() => {
+      vi.advanceTimersByTime(300);
+    });
 
     expect(onSearch).toHaveBeenCalledTimes(1);
     expect(onSearch).toHaveBeenCalledWith("notebook");
@@ -39,14 +40,22 @@ describe("SearchInput", () => {
     const input = screen.getByPlaceholderText(/buscar/i);
 
     fireEvent.change(input, { target: { value: "no" } });
-    vi.advanceTimersByTime(150);
+
+    act(() => {
+      vi.advanceTimersByTime(150);
+    });
 
     fireEvent.change(input, { target: { value: "note" } });
-    vi.advanceTimersByTime(150);
+
+    act(() => {
+      vi.advanceTimersByTime(150);
+    });
 
     expect(onSearch).not.toHaveBeenCalled();
 
-    vi.advanceTimersByTime(150);
+    act(() => {
+      vi.advanceTimersByTime(150);
+    });
 
     expect(onSearch).toHaveBeenCalledTimes(1);
     expect(onSearch).toHaveBeenCalledWith("note");
