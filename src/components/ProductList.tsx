@@ -1,17 +1,27 @@
-import type { Product } from "../types/Product";
-import { formatPrice } from "../utils/price";
+import { useEffect, useState } from "react";
 
-export function ProductList({ products }: { products: Product[] }) {
-  if (!products.length) {
-    return <p aria-live="polite">Nenhum produto encontrado</p>;
-  }
+type Product = {
+  id: number;
+  name: string;
+};
+
+type Props = {
+  query: string;
+};
+
+export function ProductList({ query }: Props) {
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    fetch(`/api/products?search=${query}`)
+      .then((res) => res.json())
+      .then(setProducts);
+  }, []);
 
   return (
-    <ul aria-label="Lista de produtos">
-      {products.map(({ id, title, price }) => (
-        <li key={id}>
-          {title} - {formatPrice(price)}
-        </li>
+    <ul>
+      {products.map((p) => (
+        <li key={p.id}>{p.name}</li>
       ))}
     </ul>
   );
