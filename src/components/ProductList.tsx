@@ -7,10 +7,10 @@ export function ProductList({ products }: { products: Product[] }) {
   }
 
   return (
-    <ul aria-label="Lista de produtos">
-      {products.map(({ id, title, price }) => (
-        <li key={id}>
-          {title} - {formatPrice(price)}
+    <ul>
+      {products.map((p) => (
+        <li key={p.id}>
+          {p.title} - {formatPrice(p.price)}
         </li>
       ))}
     </ul>
