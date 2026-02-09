@@ -1,4 +1,3 @@
-// hooks/useProducts.ts
 import { useEffect, useState } from "react";
 import type { Product } from "../types/Product";
 
@@ -12,13 +11,28 @@ export function useProducts({ search, page }: Params) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
+    let cancelled = false;
 
-    fetch(`/api/products?search=${search}&page=${page}`)
-      .then((res) => res.json())
-      .then((data) => setProducts(data))
-      .finally(() => setLoading(false));
-  }, []); // ❌ dependency array errado
+    async function load() {
+      setLoading(true);
+
+      const response = await fetch(
+        `/api/products?search=${search}&page=${page}`,
+      );
+      const data = await response.json();
+
+      if (!cancelled) {
+        setProducts(data);
+        setLoading(false);
+      }
+    }
+
+    load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [search, page]);
 
   return { products, loading };
 }
