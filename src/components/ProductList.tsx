@@ -16,7 +16,7 @@ export function ProductList({ query }: Props) {
     fetch(`/api/products?search=${query}`)
       .then((res) => res.json())
       .then(setProducts);
-  }, []);
+  }, [query]);
 
   return (
     <ul>
