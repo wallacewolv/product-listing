@@ -6,8 +6,9 @@ const mockProducts = [{ id: 1, title: "Mouse", price: 100 }];
 
 beforeEach(() => {
   globalThis.fetch = vi.fn().mockResolvedValue({
+    ok: true,
     json: vi.fn().mockResolvedValue(mockProducts),
-  } as unknown);
+  } as unknown as Response);
 });
 
 afterEach(() => {

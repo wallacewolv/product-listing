@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import type { Product } from "../types/Product";
 
-interface Params {
-  search: string;
-  page: number;
-}
+import type { Product } from "../types/Product";
+import type { Params } from "../types/Params";
+import { buildProductUrl } from "../utils/products-url";
 
 export function useProducts({ search, page }: Params) {
   const [products, setProducts] = useState<Product[]>([]);
@@ -16,14 +14,22 @@ export function useProducts({ search, page }: Params) {
     async function load() {
       setLoading(true);
 
-      const response = await fetch(
-        `/api/products?search=${search}&page=${page}`,
-      );
-      const data = await response.json();
+      try {
+        const response = await fetch(buildProductUrl(search, page));
 
-      if (!cancelled) {
-        setProducts(data);
-        setLoading(false);
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+
+        const data = await response.json();
+
+        if (!cancelled) {
+          setProducts(data);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     }
 
